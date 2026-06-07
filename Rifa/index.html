@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rifa Interactiva</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="pink">
+
+  <div class="theme-mini" id="themePicker">
+    <button class="theme-pink" onclick="setTheme('pink')" title="Tema rosa">💗</button>
+    <button class="theme-blue" onclick="setTheme('blue')" title="Tema azul">💙</button>
+  </div>
+
+  <div class="fl" id="mainCard">
+
+    <div class="hdr">
+      <div class="titles">
+        <div class="rifa-sc">Rifa</div>
+        <div class="kit-lb" id="prizeName">Kit de Belleza</div>
+      </div>
+      <div class="hdr-btns">
+        <button class="icon-btn" onclick="openThemePicker()" title="Cambiar tono" style="font-size:15px;">🎨</button>
+        <button class="icon-btn settings-btn" onclick="openSettings()" title="Configuración">⚙️</button>
+        <button class="icon-btn" onclick="confirmReset()" title="Reiniciar rifa" style="font-size:14px;">🔄</button>
+      </div>
+
+      <div class="prod-box" id="prodBox"></div>
+    </div>
+
+    <div class="dbl-ban">
+      <div class="dbl-t">✨ DOBLE OPORTUNIDAD ✨</div>
+      <div class="dbl-s">Escoge <b>1</b> número y adquieres <b>2</b> enseguida!</div>
+    </div>
+
+    <div class="inf-strip">
+      <div class="inf-card">
+        <div class="inf-ic">🌙</div>
+        <div>
+          <div class="inf-lb">Juega con</div>
+          <div class="inf-vl" id="lotteryName">Sinuano Noche<br>Últimos 2 dígitos</div>
+        </div>
+      </div>
+      <div class="inf-card">
+        <div class="inf-ic">💰</div>
+        <div>
+          <div class="inf-lb">Valor del número</div>
+          <div class="inf-vl"><span class="big" id="priceDisplay">$3.000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="draw-banner">
+      <div class="draw-ic">📅</div>
+      <div class="draw-info">
+        <div class="draw-lb">Fecha del sorteo</div>
+        <div class="draw-date" id="drawDateDisplay">No configurada</div>
+        <div class="draw-days" id="drawDaysLeft">Configura la fecha en ⚙️</div>
+      </div>
+    </div>
+
+    <div class="counter">
+      <div class="counter-item">
+        <div class="counter-num" id="countSold">0</div>
+        <div class="counter-lb">Vendidos</div>
+      </div>
+      <div class="counter-item">
+        <div class="counter-num" id="countFree">50</div>
+        <div class="counter-lb">Disponibles</div>
+      </div>
+      <div class="counter-item">
+        <div class="counter-num" id="countMoney">$0</div>
+        <div class="counter-lb">Recaudado</div>
+      </div>
+    </div>
+
+    <div class="num-hdr">
+      <span>🤍</span>
+      <span class="num-hdr-t">✨ Elige tus números ✨</span>
+      <span>🤍</span>
+    </div>
+
+    <div class="grid" id="numbersGrid"></div>
+
+    <div class="draw-btn-wrap" id="drawBtnWrap" style="display:none;">
+      <button class="draw-btn" onclick="openWinnerSelect()">
+        🎉 ¡Realizar Sorteo! 🎉
+      </button>
+    </div>
+
+    <div class="bot">
+      <div class="bot-card">
+        <div class="bot-ic">💗</div>
+        <div>
+          <div class="bot-t">¿Cómo participar?</div>
+          <div class="bot-tx">Elige tu número, realiza tu pago y envía tu comprobante.</div>
+        </div>
+      </div>
+      <div class="bot-card">
+        <div class="bot-ic">🏆</div>
+        <div>
+          <div class="bot-t">Premio</div>
+          <div class="bot-tx" id="prizeDesc">Kit de belleza completo</div>
+        </div>
+      </div>
+      <div class="part-t">¡Participa y gana! 🤍</div>
+    </div>
+
+    <div class="ws" id="whatsappBox">
+      <div class="ws-lb">✨ Reserva tu número por WhatsApp ✨</div>
+      <div class="ws-nums" id="whatsappNums">
+        <span class="ws-phone" id="phone1Wrap">📱 <span id="phone1Disp"></span></span>
+        <span class="ws-sep" id="whatsappSep">●</span>
+        <span class="ws-phone" id="phone2Wrap">📱 <span id="phone2Disp"></span></span>
+      </div>
+    </div>
+
+    <div class="gr">¡Gracias por apoyar! 🤍</div>
+  </div>
+
+  <!-- MODAL: Nombre -->
+  <div class="overlay" id="nameOverlay">
+    <div class="modal">
+      <div class="modal-emoji">🎀</div>
+      <div class="modal-title">¡Reserva tu número!</div>
+      <div class="modal-sub" id="nameModalSub">Número 00 – 99</div>
+      <input type="text" id="nameInput" placeholder="Tu nombre completo" maxlength="35" autocomplete="off" />
+      <div class="modal-btns">
+        <button class="btn btn-cancel" onclick="closeOverlay('nameOverlay')">Cancelar</button>
+        <button class="btn btn-primary" onclick="confirmName()">¡Apartar! 🎀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Liberar número -->
+  <div class="overlay" id="deselectOverlay">
+    <div class="modal">
+      <div class="modal-emoji">🔓</div>
+      <div class="modal-title">¿Liberar número?</div>
+      <div class="info-box">
+        <div class="iname" id="deselectName"></div>
+        <div class="inums" id="deselectNums"></div>
+      </div>
+      <div class="modal-sub">¿Deseas liberar este número?</div>
+      <div class="modal-btns">
+        <button class="btn btn-cancel" onclick="closeOverlay('deselectOverlay')">No, mantener</button>
+        <button class="btn btn-danger" onclick="confirmDeselect()">Sí, liberar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Configuración -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="modal wide" style="max-height:90vh;overflow-y:auto;">
+      <div class="modal-emoji">⚙️</div>
+      <div class="modal-title">Configuración</div>
+      <div class="modal-sub">Personaliza tu rifa</div>
+
+      <div class="s-group">
+        <div class="s-label">🏆 Premio</div>
+        <input type="text" id="cfg-prize" placeholder="Ej: Kit de Belleza" />
+      </div>
+
+      <div class="s-group">
+        <div class="s-label">📅 Fecha del sorteo</div>
+        <input type="date" id="cfg-date" />
+      </div>
+
+      <div class="s-group">
+        <div class="s-label">🌙 Lotería</div>
+        <input type="text" id="cfg-lottery" placeholder="Ej: Sinuano Noche" />
+      </div>
+
+      <div class="s-group">
+        <div class="s-label">💰 Precio por número (en pesos)</div>
+        <input type="text" id="cfg-price" placeholder="Ej: 3.000" />
+      </div>
+
+      <div class="s-sep"></div>
+
+      <div class="s-group">
+        <div class="s-label">🖼️ Imagen del producto</div>
+        <input type="url" id="cfg-imageUrl" placeholder="Pega una URL de imagen" />
+        <input type="file" id="cfg-imageFile" accept="image/*" />
+        <div class="mini-actions">
+          <button class="mini-btn" type="button" onclick="clearProductImage()">Quitar imagen</button>
+        </div>
+      </div>
+
+      <div class="s-sep"></div>
+
+      <div class="s-group">
+        <div class="s-label">📱 WhatsApp</div>
+        <div class="s-row">
+          <input type="text" id="cfg-phone1" placeholder="Número 1" />
+          <input type="text" id="cfg-phone2" placeholder="Número 2" />
+        </div>
+      </div>
+
+      <div class="s-sep"></div>
+
+      <div class="modal-btns">
+        <button class="btn btn-cancel" onclick="closeOverlay('settingsOverlay')">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveSettings()">Guardar ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Selección ganador -->
+  <div class="overlay" id="winnerSelectOverlay">
+    <div class="modal wide">
+      <div class="modal-emoji">🎯</div>
+      <div class="modal-title">¡Hora del Sorteo!</div>
+      <div class="modal-sub">Elige cómo seleccionar al ganador</div>
+      <button class="btn btn-gold btn-full" onclick="drawRandom()">🎲 Sorteo aleatorio</button>
+      <div class="parts-divider">o elige manualmente</div>
+      <div class="parts-list" id="partsList"></div>
+      <button class="btn btn-cancel" style="width:100%;margin-top:4px;" onclick="closeOverlay('winnerSelectOverlay')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- MODAL: Ganador -->
+  <div class="overlay" id="winnerOverlay">
+    <div class="modal">
+      <div class="winner-confetti">🎊 🎉 🎊</div>
+      <div class="modal-title" style="font-size:28px;">¡GANADOR!</div>
+      <div class="winner-trophy">🏆</div>
+      <div class="winner-name-big" id="winnerName"></div>
+      <div class="winner-nums-big" id="winnerNums"></div>
+      <div class="winner-prize" id="winnerPrize"></div>
+      <div class="winner-confetti">🎉 🎊 🎉</div>
+      <div style="margin-top:14px;">
+        <button class="btn btn-gold btn-full" onclick="resetAfterWinner()">🔄 Nueva Rifa</button>
+        <button class="btn btn-cancel" style="width:100%;" onclick="closeOverlay('winnerOverlay')">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Confirmar reinicio -->
+  <div class="overlay" id="resetOverlay">
+    <div class="modal">
+      <div class="modal-emoji">⚠️</div>
+      <div class="modal-title" style="color:#888;">Reiniciar Rifa</div>
+      <div class="modal-sub">Se borrarán todos los números vendidos. ¿Estás segura?</div>
+      <div class="modal-btns">
+        <button class="btn btn-cancel" onclick="closeOverlay('resetOverlay')">No, volver</button>
+        <button class="btn btn-danger" onclick="executeReset()">Sí, reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
